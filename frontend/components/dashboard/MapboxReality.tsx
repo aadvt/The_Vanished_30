@@ -160,22 +160,10 @@ const MapboxReality = () => {
       {/* Holographic scan overlay */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_0%,rgba(0,255,255,0.04)_0%,transparent_60%)]" />
       
-      {/* Scan line animation */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-scan" />
-      </div>
-
       <style jsx>{`
         @keyframes pulse-marker {
           0%, 100% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.3); opacity: 0.7; }
-        }
-        @keyframes scan {
-          0% { transform: translateY(-100vh); }
-          100% { transform: translateY(100vh); }
-        }
-        .animate-scan {
-          animation: scan 4s linear infinite;
         }
       `}</style>
     </div>
