@@ -1,0 +1,75 @@
+import { useStore } from '../store/useStore'
+
+class WebSocketClient {
+  private socket: WebSocket | null = null
+  private url: string
+
+  constructor(url: string) {
+    this.url = url
+  }
+
+  connect() {
+    try {
+      this.socket = new WebSocket(this.url)
+
+      this.socket.onopen = () => {
+        console.log('Connected to Live Data Loop')
+      }
+
+      this.socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data)
+          
+          // Pipeline 1: Live Data Loop Updates
+          if (data.type === 'risk_update' && data.id) {
+            useStore.getState().setValuation(data.id, {
+              price_index: data.price_index,
+              risk_score: data.risk_score,
+              volatility: data.volatility,
+              pi_ratio: data.pi_ratio
+            })
+          }
+
+          // Pipeline 2: User Query (if via WS instead of SSE)
+          if (data.type === 'agent_token') {
+            useStore.getState().appendToken(data.token)
+          }
+
+          if (data.type === 'agent_done') {
+            useStore.getState().setIsStreaming(false)
+          }
+
+          // Pipeline 3: Voice State Updates
+          if (data.type === 'voice_status') {
+             useStore.getState().setVoiceStatus(data.status)
+          }
+
+        } catch (error) {
+          console.error('Error parsing WS message:', error)
+        }
+      }
+
+      this.socket.onclose = () => {
+        console.log('WS Connection closed, retrying...')
+        setTimeout(() => this.connect(), 3000)
+      }
+
+      this.socket.onerror = (error) => {
+        console.error('WS Error:', error)
+      }
+    } catch (error) {
+      console.error('Failed to connect to WS:', error)
+    }
+  }
+
+  send(message: any) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify(message))
+    }
+  }
+}
+
+// Singleton instance (URL could be env var)
+const wsClient = new WebSocketClient(process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws')
+
+export default wsClient
