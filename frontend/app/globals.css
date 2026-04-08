@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050505;
+  --color-foreground: #ffffff;
+  
+  --color-primary: #00ff88;
+  --color-secondary: #00aaff;
+  --color-accent: #8800ff;
+  
+  --color-risk-low: #00ff88;
+  --color-risk-medium: #ffaa00;
+  --color-risk-high: #ff0044;
+
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+}
+
+@layer base {
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden; /* Prevent scroll for immersive feel */
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glow-primary {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+  }
+  
+  .glow-secondary {
+    filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.5));
+  }
+}
+
+/* Custom scrollbar for chat */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
