@@ -1,42 +1,31 @@
 'use client'
 
-import { useEffect, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useStore } from '../store/useStore'
+import { api } from '@/lib/apiClient'
+import type { QueryResult } from '@/lib/apiClient'
 
 export const useBackendSocket = () => {
-  const { appendToken, setIsStreaming, setTranscript } = useStore()
+  const { setTranscript, setIsStreaming } = useStore()
 
   const queryNL = useCallback(async (query: string) => {
     setTranscript('')
     setIsStreaming(true)
 
     try {
-      // Using Fetch + SSE for token streaming (Pipeline 2)
-      const response = await fetch('/api/query', {
+      const result = await api<QueryResult>('/api/query', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({ question: query, region: 'national' }),
       })
 
-      if (!response.body) return
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-
-      while (true) {
-        const { value, done } = await reader.read()
-        if (done) break
-        
-        const chunk = decoder.decode(value, { stream: true })
-        appendToken(chunk)
-      }
-
+      setTranscript(result.answer || 'No answer received.')
       setIsStreaming(false)
     } catch (error) {
-      console.error('SSE Error:', error)
+      console.error('[Query] Error:', error)
+      setTranscript('Error: Could not reach the analysis engine.')
       setIsStreaming(false)
     }
-  }, [appendToken, setIsStreaming, setTranscript])
+  }, [setTranscript, setIsStreaming])
 
   return { queryNL }
 }

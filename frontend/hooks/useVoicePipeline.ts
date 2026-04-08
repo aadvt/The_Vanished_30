@@ -92,45 +92,108 @@ export const useVoicePipeline = () => {
     }
   }, [setVoiceStatus])
 
-  // Process the STT transcript — send to query API, then speak the result
+  // Location lookup table — spoken names → coordinates
+  const LOCATION_COORDS: Record<string, { lng: number; lat: number; zoom?: number; label: string }> = {
+    'mumbai': { lng: 72.8656, lat: 19.0658, zoom: 16.5, label: 'Mumbai BKC' },
+    'bkc': { lng: 72.8656, lat: 19.0658, zoom: 16.5, label: 'Mumbai BKC' },
+    'bandra': { lng: 72.8356, lat: 19.0596, zoom: 16.5, label: 'Bandra' },
+    'delhi': { lng: 77.2090, lat: 28.6139, zoom: 16.5, label: 'Delhi' },
+    'new delhi': { lng: 77.2090, lat: 28.6139, zoom: 16.5, label: 'New Delhi' },
+    'connaught': { lng: 77.2195, lat: 28.6315, zoom: 16.5, label: 'Connaught Place' },
+    'bangalore': { lng: 77.5946, lat: 12.9716, zoom: 16.5, label: 'Bangalore' },
+    'bengaluru': { lng: 77.5946, lat: 12.9716, zoom: 16.5, label: 'Bengaluru' },
+    'whitefield': { lng: 77.7500, lat: 12.9698, zoom: 16.5, label: 'Whitefield' },
+    'chennai': { lng: 80.2707, lat: 13.0827, zoom: 16.5, label: 'Chennai' },
+    'hyderabad': { lng: 78.4867, lat: 17.3850, zoom: 16.5, label: 'Hyderabad' },
+    'hitec city': { lng: 78.3816, lat: 17.4474, zoom: 16.5, label: 'HITEC City' },
+    'pune': { lng: 73.8567, lat: 18.5204, zoom: 16.5, label: 'Pune' },
+    'gurgaon': { lng: 77.0266, lat: 28.4595, zoom: 16.5, label: 'Gurgaon' },
+    'gurugram': { lng: 77.0266, lat: 28.4595, zoom: 16.5, label: 'Gurugram' },
+    'noida': { lng: 77.3910, lat: 28.5355, zoom: 16.5, label: 'Noida' },
+    'kolkata': { lng: 88.3639, lat: 22.5726, zoom: 16.5, label: 'Kolkata' },
+    'ahmedabad': { lng: 72.5714, lat: 23.0225, zoom: 16.5, label: 'Ahmedabad' },
+    'navi mumbai': { lng: 73.0169, lat: 19.0330, zoom: 16.5, label: 'Navi Mumbai' },
+    'thane': { lng: 72.9781, lat: 19.2183, zoom: 13, label: 'Thane' },
+  }
+
+  // Detect location from text and fly map there
+  const detectAndFlyToLocation = useCallback((text: string) => {
+    const lower = text.toLowerCase()
+    // Check longest keys first to match "navi mumbai" before "mumbai"
+    const keys = Object.keys(LOCATION_COORDS).sort((a, b) => b.length - a.length)
+    for (const key of keys) {
+      if (lower.includes(key)) {
+        const loc = LOCATION_COORDS[key]
+        useStore.getState().flyToLocation(loc.lng, loc.lat, loc.zoom, loc.label)
+        console.log(`[Voice] Flying to ${loc.label}`)
+        return loc.label
+      }
+    }
+    return null
+  }, [])
+
+  // Process the STT transcript — detect location, send to query API, then speak the result
   const processTranscript = useCallback(async (transcript: string) => {
     if (!transcript.trim()) return
     
+    // Check for location intent in the voice command
+    detectAndFlyToLocation(transcript)
+
     setTranscript('')
     setIsStreaming(true)
+    const currentState = useStore.getState();
+    const currentRegion = currentState.activeRegion || 'national';
+
+    // Highlight the map based on the sentiment of the simulated scenario
+    const lowerT = transcript.toLowerCase();
+    
+    const isEasing = ['reduce', 'down', 'cut', 'decrease', 'drop', 'fall', 'relax', 'lower'].some(w => lowerT.includes(w));
+    const isStress = ['up', 'crash', 'stress', 'increase', 'hike', 'jump', 'collapse', 'bubble', 'higher'].some(w => lowerT.includes(w));
+
+    // Only trigger override if they are asking a hypothetical or simulation question
+    if (lowerT.includes('what will happen') || lowerT.includes('what if') || lowerT.includes('if ') || isEasing || isStress) {
+      if (isEasing && !isStress) {
+        currentState.setOverrideScore(15); // Flash Green (Safe / Easing Risk)
+      } else if (isStress && !isEasing) {
+        currentState.setOverrideScore(95); // Flash Red (High Stress / Danger)
+      } else if (lowerT.includes('crash') || lowerT.includes('collapse')) {
+        currentState.setOverrideScore(95); // Extreme stress
+      } else {
+        currentState.setOverrideScore(80); // Default to warning/high for general hypotheticals
+      }
+      
+      setTimeout(() => {
+        useStore.getState().setOverrideScore(null);
+      }, 7000); // 7 second flash while AI thinks/speaks
+    }
 
     try {
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: transcript }),
+        body: JSON.stringify({ question: transcript, region: currentRegion }),
       })
 
-      if (!response.ok || !response.body) return
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let fullResponse = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        const chunk = decoder.decode(value, { stream: true })
-        appendToken(chunk)
-        fullResponse += chunk
+      if (!response.ok) {
+        setIsStreaming(false)
+        return
       }
 
+      const result = await response.json()
+      const answer = result.answer || 'I could not find an answer.'
+
+      setTranscript(answer)
       setIsStreaming(false)
 
       // Speak the AI response
-      if (fullResponse.trim()) {
-        await speakResponse(fullResponse)
+      if (answer.trim()) {
+        await speakResponse(answer)
       }
     } catch (err) {
       console.error('Query error:', err)
       setIsStreaming(false)
     }
-  }, [setTranscript, setIsStreaming, appendToken, speakResponse])
+  }, [setTranscript, setIsStreaming, speakResponse, detectAndFlyToLocation])
 
   // Start the full pipeline: Mic → Deepgram STT → AI → ElevenLabs TTS → Speaker
   const startListening = useCallback(async () => {
@@ -153,7 +216,7 @@ export const useVoicePipeline = () => {
       const deepgramKey = await fetch('/api/deepgram-key').then(r => r.json()).then(d => d.key)
       
       dgSocket.current = new WebSocket(
-        `${DEEPGRAM_WS_URL}?model=nova-2&language=en&smart_format=true&interim_results=true`,
+        `${DEEPGRAM_WS_URL}?model=nova-2&language=en&smart_format=true&interim_results=true&endpointing=3000`,
         ['token', deepgramKey]
       )
 

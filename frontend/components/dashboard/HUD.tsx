@@ -1,80 +1,82 @@
 'use client'
 
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import ChatPanel from './ChatPanel'
-import RiskOverview from './RiskOverview'
-import VoiceControl from './VoiceControl'
+import { motion } from 'framer-motion'
 import { useStore } from '@/store/useStore'
+import VoiceControl from '@/components/dashboard/VoiceControl'
+import MetricStrip from '@/components/dashboard/MetricStrip'
+import BottomDrawer from '@/components/dashboard/BottomDrawer'
+import PropertyPanel from '@/components/dashboard/PropertyPanel'
 
 const HUD = () => {
-  const { voiceStatus } = useStore()
+  const { selectedAssetId, setSelectedAssetId, backendStatus, flyToLocation, activeRegion } = useStore()
+
+  const CITIES = [
+    { label: 'Mumbai', lng: 72.8656, lat: 19.0658, zoom: 16.5 },
+    { label: 'Delhi', lng: 77.2090, lat: 28.6139, zoom: 16.5 },
+    { label: 'Bangalore', lng: 77.5946, lat: 12.9716, zoom: 16.5 },
+    { label: 'Chennai', lng: 80.2707, lat: 13.0827, zoom: 16.5 },
+  ]
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 flex flex-col justify-between p-6">
-      {/* Top Header */}
-      <header className="flex justify-between items-start pointer-events-auto">
+    <div className="fixed inset-0 pointer-events-none z-50 flex flex-col font-body">
+      {/* TOP NAVIGATION PILL - Matcha Light Style */}
+      <nav className="fixed top-0 left-[100px] right-0 flex justify-center py-8">
         <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-dark px-4 py-2 rounded-lg border-primary/20"
+          initial={{ y: -60, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="nav-pill flex items-center gap-10 pointer-events-auto"
         >
-          <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            LUMINOUS <span className="font-light opacity-50 text-sm">REAL ESTATE ENGINE</span>
-          </h1>
+          <div className="text-xl font-bold tracking-tighter text-[#0f4d23] font-headline">
+            LUMINOUS <span className="font-light opacity-60 text-[10px] text-[#1A1D1A]">REAL ESTATE</span>
+          </div>
+          
+          <div className="flex gap-2">
+            {CITIES.map((city) => (
+              <button
+                key={city.label}
+                onClick={() => flyToLocation(city.lng, city.lat, city.zoom, city.label)}
+                className={`font-headline text-[10px] font-bold tracking-[0.15em] uppercase transition-all px-3 py-1.5 rounded-full ${
+                  activeRegion === city.label
+                    ? 'bg-[#0f4d23] text-white'
+                    : 'text-slate-400 hover:text-[#0f4d23] hover:bg-[#0f4d2310]'
+                }`}
+              >
+                {city.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4 pl-6 border-l border-black/5">
+            {/* Live backend status indicator */}
+            <div className={`w-2 h-2 rounded-full ${
+              backendStatus === 'connected' ? 'bg-emerald-500 animate-pulse'
+              : backendStatus === 'loading' ? 'bg-amber-400 animate-pulse'
+              : 'bg-red-400'
+            }`} />
+            <div className="bg-[#0f4d2315] text-[#0f4d23] px-4 py-1 rounded-full text-[9px] font-bold font-headline tracking-tighter border border-[#0f4d2330]">
+              {backendStatus === 'connected' ? 'ENGINE LIVE' : backendStatus === 'loading' ? 'CONNECTING...' : 'OFFLINE'}
+            </div>
+          </div>
         </motion.div>
+      </nav>
 
-        <RiskOverview />
-      </header>
+      {/* LEFT METRIC STRIP (100px rail) */}
+      <MetricStrip />
 
-      {/* Main UI Overlay */}
-      <main className="flex-1 flex items-center justify-between">
-         {/* Left: Chat & Controls */}
-         <div className="w-1/3 h-full flex flex-col justify-end pointer-events-auto">
-            <ChatPanel />
-         </div>
+      {/* RIGHT PROPERTY PANEL */}
+      <PropertyPanel isOpen={!!selectedAssetId} onClose={() => setSelectedAssetId(null)} />
 
-         {/* Center: Voice Control */}
-         <div className="flex-1 flex items-end justify-center pb-6 pointer-events-auto">
-            <VoiceControl />
-         </div>
+      {/* BOTTOM DRAWER (116px) */}
+      <BottomDrawer />
 
-         {/* Right: Detailed Analysis or Scenario controls */}
-         <div className="w-1/4 h-full flex flex-col justify-end items-end pointer-events-auto">
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="glass p-4 rounded-xl w-full"
-            >
-              <h3 className="text-xs font-semibold uppercase tracking-widest opacity-40 mb-3">Live Feed Status</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="opacity-60 text-[10px]">VOICE ENGINE</span>
-                  <span className={voiceStatus !== 'idle' ? 'text-primary' : 'opacity-40'}>
-                    {voiceStatus.toUpperCase()}
-                  </span>
-                </div>
-                <div className="w-full bg-white/5 h-[1px]" />
-                <div className="flex justify-between text-xs">
-                  <span className="opacity-60 text-[10px]">ACTIVE VIEW</span>
-                  <span>BKC MUMBAI</span>
-                </div>
-              </div>
-            </motion.div>
-         </div>
-      </main>
-
-      {/* Bottom Visualizer / Status Bar */}
-      <footer className="h-1 bg-white/5 w-full relative overflow-hidden">
-        <motion.div 
-          className="absolute inset-y-0 left-0 bg-primary/30"
-          animate={{ width: ['0%', '100%'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-        />
-      </footer>
+      {/* VOICE ENGINE CARD */}
+      <div className="fixed bottom-[140px] left-[132px] pointer-events-auto z-40">
+        <VoiceControl />
+      </div>
     </div>
   )
 }
+
 
 export default HUD

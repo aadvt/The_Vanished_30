@@ -2,7 +2,7 @@
 
 import RealityEngine from '@/components/dashboard/RealityEngine'
 import HUD from '@/components/dashboard/HUD'
-import MockDataLoop from '@/components/MockDataLoop'
+import LiveDataLoop from '@/components/LiveDataLoop'
 
 export default function Home() {
   return (
@@ -13,8 +13,8 @@ export default function Home() {
       {/* Interface Layer (HUD, Chat, Stats) */}
       <HUD />
 
-      {/* Simulation Logic (Remove when connecting real backend) */}
-      <MockDataLoop />
+      {/* Live Backend Data Loop (replaces MockDataLoop) */}
+      <LiveDataLoop />
 
       {/* Ambient Lighting & Effects */}
       <div className="fixed inset-0 pointer-events-none">

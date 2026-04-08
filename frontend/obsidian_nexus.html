@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEON PRECISION // OBSIDIAN NEXUS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#6f758b",
+                    "on-secondary": "#005e3b",
+                    "on-secondary-fixed": "#00492d",
+                    "on-primary-fixed": "#004527",
+                    "primary-fixed": "#00fc9b",
+                    "tertiary-fixed": "#00e3fd",
+                    "on-error": "#490006",
+                    "error-container": "#9f0519",
+                    "primary": "#a0ffc3",
+                    "primary-fixed-dim": "#00ec91",
+                    "secondary-fixed": "#9df5c3",
+                    "error": "#ff716c",
+                    "on-error-container": "#ffa8a3",
+                    "on-primary-container": "#005b34",
+                    "inverse-primary": "#006d40",
+                    "error-dim": "#d7383b",
+                    "on-secondary-fixed-variant": "#006943",
+                    "tertiary-fixed-dim": "#00d4ec",
+                    "on-primary": "#00643a",
+                    "secondary-dim": "#8fe6b5",
+                    "on-tertiary-container": "#004d57",
+                    "surface": "#070d1f",
+                    "surface-tint": "#a0ffc3",
+                    "tertiary": "#81ecff",
+                    "tertiary-dim": "#00d4ec",
+                    "inverse-surface": "#faf8ff",
+                    "on-surface": "#dfe4fe",
+                    "surface-container-high": "#171f36",
+                    "background": "#000000",
+                    "primary-dim": "#00ec91",
+                    "surface-container-low": "#0c1326",
+                    "surface-bright": "#222b47",
+                    "secondary-container": "#036c45",
+                    "secondary": "#9df5c3",
+                    "surface-variant": "#1c253e",
+                    "on-background": "#dfe4fe",
+                    "primary-container": "#00fc9b",
+                    "outline-variant": "#41475b",
+                    "surface-container-lowest": "#000000",
+                    "on-secondary-container": "#e1ffea",
+                    "secondary-fixed-dim": "#8fe6b5",
+                    "on-tertiary-fixed": "#003840",
+                    "on-surface-variant": "#a5aac2",
+                    "surface-dim": "#070d1f",
+                    "inverse-on-surface": "#4f5469",
+                    "on-tertiary": "#005762",
+                    "tertiary-container": "#00e3fd",
+                    "surface-container-highest": "#1c253e",
+                    "on-tertiary-fixed-variant": "#005762",
+                    "on-primary-fixed-variant": "#00653b",
+                    "surface-container": "#11192e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Manrope"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #000000; color: #dfe4fe; font-family: 'Manrope', sans-serif; overflow: hidden; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(12, 19, 38, 0.4); backdrop-filter: blur(24px) saturate(150%); }
+        .jade-glow { text-shadow: 0 0 12px rgba(160, 255, 195, 0.6); }
+        .jade-border-glow { box-shadow: 0 0 20px rgba(160, 255, 195, 0.1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .isometric-canvas { perspective: 1000px; transform: rotateX(45deg) rotateZ(-45deg); }
+        .building { transform-style: preserve-3d; transition: all 0.5s ease; }
+        .risk-glow { box-shadow: 0 0 30px rgba(160, 255, 195, 0.8); border: 1px solid #a0ffc3; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+        .voice-pulse { animation: pulse 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TOP NAVIGATION BAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center rounded-full mt-4 mx-6 px-6 py-2 bg-slate-900/40 backdrop-blur-3xl shadow-[0_0_20px_rgba(160,255,195,0.04)]">
+<div class="text-xl font-bold tracking-tighter text-[#a0ffc3] font-headline">NEON PRECISION</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#a0ffc3] border-b-2 border-[#a0ffc3] pb-1 font-label text-[10px] tracking-widest uppercase" href="#">City</a>
+<a class="text-slate-400 font-medium font-label text-[10px] tracking-widest uppercase hover:text-[#a0ffc3] hover:drop-shadow-[0_0_8px_rgba(160,255,195,0.6)] transition-all" href="#">Globe</a>
+<a class="text-slate-400 font-medium font-label text-[10px] tracking-widest uppercase hover:text-[#a0ffc3] hover:drop-shadow-[0_0_8px_rgba(160,255,195,0.6)] transition-all" href="#">Scenario</a>
+<a class="text-slate-400 font-medium font-label text-[10px] tracking-widest uppercase hover:text-[#a0ffc3] hover:drop-shadow-[0_0_8px_rgba(160,255,195,0.6)] transition-all" href="#">Live</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-primary-container/20 text-primary px-4 py-1 rounded-full text-[10px] font-bold font-headline tracking-tighter border border-primary/30 voice-pulse">
+                Bubble Risk: 0.42
+            </div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="Operator" class="w-full h-full object-cover" data-alt="close-up portrait of a tech professional in dark environment with cyan screen reflection on face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSDK-2zQ2j8WMExorzmd4VzzOjNIVb5BMxO-f4nxZbw28hPEcyCLHOG2ouaGDmvTxTJyV7oDzctN7ilBJfa8G-TExoIxXS7OQyifWSH3lIiVgKC52PHPAIz1phpHLbheT2pbHLII3mx2l_L2b2_MuQd1ynNXVxwy0J5jt3ZHbKKeDbiuKKvBZ1lwl9T4EdXIWrOznsJF6h_s3rRLCPCo1ZNJXWJTZIf9n0uiiDDGGhs-EcYGfNv6_Jn684GzT9DmAjYcQ6b_tCpEg4"/>
+</div>
+</div>
+</nav>
+<!-- LEFT SIDE METRIC STRIP -->
+<aside class="w-[100px] h-screen fixed left-0 top-0 bg-[#0c1326]/40 backdrop-blur-2xl z-40 flex flex-col items-center py-24 gap-8">
+<!-- Median Price -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer transition-transform hover:scale-110">
+<span class="material-symbols-outlined text-[#a0ffc3] text-xl">payments</span>
+<span class="font-label text-[9px] tracking-widest text-slate-500 opacity-60 uppercase">Median</span>
+<div class="font-headline text-xs font-bold text-[#a0ffc3]">$1.2M</div>
+<div class="text-[8px] text-primary/80">+2.4%</div>
+</div>
+<!-- P/I Ratio -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-[#a0ffc3] scale-110">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle class="opacity-20" cx="20" cy="20" fill="transparent" r="18" stroke="currentColor" stroke-width="2"></circle>
+<circle cx="20" cy="20" fill="transparent" r="18" stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="30" stroke-width="2"></circle>
+</svg>
+<span class="material-symbols-outlined text-lg">query_stats</span>
+</div>
+<span class="font-label text-[9px] tracking-widest uppercase">P/I Ratio</span>
+</div>
+<!-- Cap Rate -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer hover:opacity-100 transition-all">
+<span class="material-symbols-outlined text-slate-500 opacity-60 text-xl group-hover:text-[#a0ffc3]">percent</span>
+<span class="font-label text-[9px] tracking-widest text-slate-500 opacity-60 uppercase">Cap Rate</span>
+<div class="w-12 h-4 overflow-hidden opacity-40 group-hover:opacity-100">
+<svg class="w-full h-full stroke-[#a0ffc3] fill-none" viewbox="0 0 50 20">
+<polyline points="0,15 10,12 20,18 30,5 40,8 50,2" stroke-width="2"></polyline>
+</svg>
+</div>
+</div>
+<!-- FFR -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<span class="material-symbols-outlined text-slate-500 opacity-60 text-xl group-hover:text-[#a0ffc3]">trending_up</span>
+<span class="font-label text-[9px] tracking-widest text-slate-500 opacity-60 uppercase">FFR</span>
+<div class="text-[8px] text-slate-500 font-mono">5.25%</div>
+</div>
+<!-- DSCR -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<span class="material-symbols-outlined text-slate-500 opacity-60 text-xl group-hover:text-[#a0ffc3]">security</span>
+<span class="font-label text-[9px] tracking-widest text-slate-500 opacity-60 uppercase">DSCR</span>
+<div class="text-[8px] px-1 bg-primary/20 text-primary border border-primary/20 rounded">1.42x</div>
+</div>
+<div class="mt-auto pb-8">
+<div class="w-10 h-10 rounded-full glass-panel border border-primary/30 flex items-center justify-center voice-pulse cursor-pointer">
+<div class="w-4 h-4 bg-primary rounded-full blur-[2px]"></div>
+</div>
+</div>
+</aside>
+<!-- MAIN 3D CANVAS AREA -->
+<main class="fixed inset-0 ml-[100px] bg-black overflow-hidden flex items-center justify-center">
+<!-- Isometric Grid Background -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#a0ffc3 0.5px, transparent 0.5px); background-size: 32px 32px;"></div>
+<!-- Mock 3D Isometric View -->
+<div class="isometric-canvas grid grid-cols-6 gap-8 p-32">
+<!-- Low Risk Buildings -->
+<div class="building w-12 h-24 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-32 bg-surface-container-high border-l border-t border-white/5"></div>
+<!-- High Risk Building -->
+<div class="building w-12 h-48 bg-primary/20 risk-glow flex items-end justify-center pb-4">
+<div class="text-[8px] font-bold text-primary font-headline tracking-tighter">RISK 0.82</div>
+</div>
+<div class="building w-12 h-16 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-56 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-24 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-40 bg-surface-container-high border-l border-t border-white/5"></div>
+<!-- High Risk Building -->
+<div class="building w-12 h-32 bg-primary/30 risk-glow"></div>
+<div class="building w-12 h-20 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-28 bg-surface-container-high border-l border-t border-white/5"></div>
+<div class="building w-12 h-64 bg-primary/10 risk-glow"></div>
+<div class="building w-12 h-36 bg-surface-container-high border-l border-t border-white/5"></div>
+</div>
+<!-- Floating UI Overlays on Canvas -->
+<div class="absolute top-32 left-12 glass-panel p-4 rounded-lg border-l border-primary/20">
+<h3 class="font-headline text-xs font-bold text-primary tracking-widest uppercase mb-2">Telemetry Cluster A-1</h3>
+<div class="space-y-3">
+<div class="flex justify-between gap-8">
+<span class="text-[10px] text-slate-400">Yield Convergence</span>
+<span class="text-[10px] text-primary font-mono">0.02%</span>
+</div>
+<div class="flex justify-between gap-8">
+<span class="text-[10px] text-slate-400">Liquidity Index</span>
+<span class="text-[10px] text-primary font-mono">0.88</span>
+</div>
+</div>
+</div>
+</main>
+<!-- RIGHT PROPERTY PANEL -->
+<aside class="fixed right-0 top-0 h-full w-96 bg-[#070d1f] border-l border-white/10 z-[60] flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.5)] transition-transform duration-500">
+<div class="p-8 border-b border-white/5">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-xl font-headline font-bold text-primary tracking-tight">Building Alpha-7</h2>
+<p class="text-xs text-slate-400 font-label">PropertyPanel // Sub-Sector 04</p>
+</div>
+<button class="material-symbols-outlined text-slate-500 hover:text-white transition-colors">close</button>
+</div>
+<div class="rounded-lg overflow-hidden h-40 mb-6 border border-white/10 relative">
+<img alt="Building Detail" class="w-full h-full object-cover grayscale brightness-50" data-alt="modern skyscraper facade with glass and steel architecture at night illuminated by neon lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4XPhG0sA2OwmTaJYibHwwtptAN_SMN9XOY5wUxEWzJCV3kebnPRcWKugyhXmApm-kcXWBiVFPdqikhipo7VCtNs3D0fFYr5_buFVF8l9L8pYmJyUwh_AEYnZv1Uf8osN2QpGMqM2TfXeVFp-bYQrO9D_QmLujSfesKLDiwuO0hyw9tCL1xRg7dz4jG5ZxnravM5g5wVlewi6UTHIrYFLHbuMBfo0E5uMrcAnKm4cnowyhXwO49vCTx4W0CEW5_Ia5jzB2KX9iGJGP"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="text-primary font-headline text-lg font-bold">$42.8M</span>
+<p class="text-[10px] text-slate-300">Valuation Comp / Tier 1</p>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar p-8 space-y-8">
+<!-- Tabs -->
+<div class="flex gap-4 border-b border-white/5 pb-2">
+<button class="text-[#a0ffc3] bg-[#0c1326] px-3 py-1 text-xs font-medium rounded">Overview</button>
+<button class="text-slate-400 hover:text-white text-xs font-medium px-3 py-1 transition-all">Financials</button>
+<button class="text-slate-400 hover:text-white text-xs font-medium px-3 py-1 transition-all">Risk</button>
+</div>
+<!-- Risk Profile -->
+<section>
+<div class="flex justify-between items-end mb-2">
+<h4 class="font-headline text-[10px] font-bold tracking-widest text-primary uppercase">Risk Analysis</h4>
+<span class="text-xs font-bold text-primary">0.82 High</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[82%] shadow-[0_0_8px_#a0ffc3]"></div>
+</div>
+</section>
+<!-- Comps -->
+<section class="space-y-4">
+<h4 class="font-headline text-[10px] font-bold tracking-widest text-slate-500 uppercase">Valuation Comps</h4>
+<div class="bg-surface-container-low p-4 rounded border-l-2 border-primary/40">
+<div class="flex justify-between mb-1">
+<span class="text-xs text-white">Prism Tower</span>
+<span class="text-xs font-mono text-primary">$41.2M</span>
+</div>
+<p class="text-[10px] text-slate-500">2.4mi distance // 98% Correlation</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded border-l-2 border-slate-700">
+<div class="flex justify-between mb-1">
+<span class="text-xs text-white">Helix Center</span>
+<span class="text-xs font-mono text-primary">$39.8M</span>
+</div>
+<p class="text-[10px] text-slate-500">4.1mi distance // 92% Correlation</p>
+</div>
+</section>
+</div>
+<div class="p-8 mt-auto border-t border-white/5">
+<button class="w-full bg-primary text-on-primary py-3 font-headline font-bold text-sm tracking-widest uppercase hover:shadow-[0_0_20px_#a0ffc3] transition-all duration-300">
+                Initialize Transaction
+            </button>
+</div>
+</aside>
+<!-- BOTTOM DRAWER -->
+<footer class="fixed bottom-0 left-[100px] right-0 h-[116px] hover:h-[220px] transition-all duration-300 bg-black/80 backdrop-blur-xl z-40 flex flex-col px-8 py-4 shadow-[0_-4px_24px_rgba(160,255,195,0.05)]">
+<div class="flex items-center justify-between border-b border-white/5 pb-4 mb-4">
+<div class="flex items-center gap-8">
+<div class="flex flex-col">
+<span class="text-[10px] font-headline font-bold tracking-widest text-slate-500 uppercase">System Active</span>
+<span class="text-xs font-mono text-primary">NODE 042 // SECTOR_JADE</span>
+</div>
+<div class="h-8 w-px bg-white/10"></div>
+<div class="flex flex-col">
+<span class="text-[10px] font-headline font-bold tracking-widest text-slate-500 uppercase">30d Sparkline</span>
+<div class="w-32 h-6 mt-1">
+<svg class="w-full h-full stroke-primary fill-none" viewbox="0 0 100 20">
+<path d="M0,18 L10,15 L20,17 L30,8 L40,12 L50,14 L60,5 L70,8 L80,2 L90,6 L100,4" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+</svg>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="text-[10px] font-headline tracking-widest uppercase text-slate-500 hover:text-primary transition-colors cursor-pointer">Agent Transcript</button>
+<button class="text-[10px] font-headline tracking-widest uppercase text-slate-500 hover:text-primary transition-colors cursor-pointer">Protocol Logs</button>
+</div>
+</div>
+<div class="opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+<div class="grid grid-cols-2 gap-12">
+<div>
+<h5 class="text-[10px] font-bold text-primary uppercase mb-2">Live AI Transcript</h5>
+<p class="text-xs text-slate-400 font-body leading-relaxed">
+                        [14:22:04] <span class="text-primary-container">AGENT_PHI:</span> Detecting unusual yield compression in Sector 4. Market correlation shifting to 0.94. Recommended action: Monitor DSCR buffers on highly leveraged assets. Alpha-7 asset specifically showing risk score divergence.
+                    </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-surface-container rounded border border-white/5">
+<span class="text-[9px] text-slate-500 uppercase">Volatility</span>
+<div class="text-sm font-headline font-bold text-primary">High // 1.2x</div>
+</div>
+<div class="p-3 bg-surface-container rounded border border-white/5">
+<span class="text-[9px] text-slate-500 uppercase">Confidence</span>
+<div class="text-sm font-headline font-bold text-primary">94.2%</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<!-- VOICE ORB (BOTTOM LEFT) -->
+<div class="fixed bottom-6 left-6 z-[100] group cursor-pointer">
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-12 h-12 rounded-full glass-panel border border-primary/40 flex items-center justify-center voice-pulse relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent"></div>
+<div class="w-5 h-5 bg-primary rounded-full blur-[3px]"></div>
+<!-- Animated Waves Mock -->
+<div class="absolute bottom-1 flex gap-0.5 items-end h-3">
+<div class="w-0.5 h-full bg-primary/60"></div>
+<div class="w-0.5 h-1/2 bg-primary/60"></div>
+<div class="w-0.5 h-3/4 bg-primary/60"></div>
+<div class="w-0.5 h-1/3 bg-primary/60"></div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

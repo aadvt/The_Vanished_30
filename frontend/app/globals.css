@@ -1,65 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #050505;
-  --color-foreground: #ffffff;
-  
-  --color-primary: #00ff88;
-  --color-secondary: #00aaff;
-  --color-accent: #8800ff;
-  
-  --color-risk-low: #00ff88;
-  --color-risk-medium: #ffaa00;
-  --color-risk-high: #ff0044;
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
 
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
-  --radius-sm: 0.5rem;
+  --color-matcha-primary: #0f4d23;
+  --color-matcha-secondary: #A4B494;
+  --color-matcha-accent: #CBD5C0;
+  --color-cream-bg: #ffffff;
+  --color-ink: #1A1D1A;
 }
 
-@layer base {
-  body {
-    background: var(--color-background);
-    color: var(--color-foreground);
-    font-family: 'Inter', sans-serif;
-    overflow: hidden; /* Prevent scroll for immersive feel */
+:root {
+  --primary-matcha: #0f4d23;
+  --secondary-matcha: #A4B494;
+  --cream-bg: #ffffff;
+  --ink: #1A1D1A;
+}
+
+body {
+  background-color: var(--color-cream-bg);
+  color: var(--color-ink);
+  font-family: 'Manrope', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Custom Utilities - v4 compatible */
+@utility glass-matcha {
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(15, 77, 35, 0.1);
+}
+
+@utility font-headline {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-@layer components {
-  .glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  }
-
-  .glass-dark {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .glow-primary {
-    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
-  }
-  
-  .glow-secondary {
-    filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.5));
-  }
+/* Structural Components */
+.nav-pill {
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(15, 77, 35, 0.1);
+  border-radius: 9999px;
+  padding: 0.625rem 1.75rem;
+  box-shadow: 0 8px 32px rgba(15, 77, 35, 0.1);
 }
 
-/* Custom scrollbar for chat */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+.metric-group {
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }

@@ -2,25 +2,36 @@
 
 import { useCallback } from 'react'
 import { useStore } from '../store/useStore'
+import { api } from '@/lib/apiClient'
+import type { ScenarioRunResult } from '@/lib/apiClient'
 
 export const useScenario = () => {
   const { setScenarioResult } = useStore()
 
-  const runScenario = useCallback(async (params: any) => {
+  const runScenario = useCallback(async (params?: {
+    rate_change_bps?: number
+    inflation_change_pct?: number
+    gdp_shock_pct?: number
+    base_value_lakh?: number
+    n_simulations?: number
+  }) => {
     try {
-      // POST /scenario -> Monte Carlo (Pipeline 2)
-      const response = await fetch('/api/scenario', {
+      const result = await api<ScenarioRunResult>('/api/scenario/run', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
+        body: JSON.stringify(params || {}),
       })
 
-      const result = await response.json()
-      
-      // result: { p5: 800000, p50: 950000, p95: 1100000 }
-      setScenarioResult(result)
+      // Map backend fields to store shape
+      setScenarioResult({
+        p5: result.p10,
+        p50: result.p50,
+        p95: result.p90,
+      })
+
+      return result
     } catch (error) {
-      console.error('Scenario Error:', error)
+      console.error('[Scenario] Error:', error)
+      return null
     }
   }, [setScenarioResult])
 
