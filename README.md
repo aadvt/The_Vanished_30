@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-"Luminous Real Estate" (originally named "The Vanished 30") is an advanced analytical platform designed for real-time detection of bubble risk within the Indian residential property market. It integrates five distinct government data sources with six statistical models, orchestrated by a LangGraph multi-agent system, to provide a real-time 3D dashboard with voice-activated Q&A capabilities. The primary objective is to offer a more accurate and dynamic assessment of property market health compared to traditional commercial platforms, which often rely on listing prices rather than actual transaction data and fail to account for live monetary policy changes [1].
+"Luminous Real Estate" is an advanced analytical platform designed for real-time detection of bubble risk within the Indian residential property market. It integrates five distinct government data sources with six statistical models, orchestrated by a LangGraph multi-agent system, to provide a real-time 3D dashboard with voice-activated Q&A capabilities. The primary objective is to offer a more accurate and dynamic assessment of property market health compared to traditional commercial platforms, which often rely on listing prices rather than actual transaction data and fail to account for live monetary policy changes [1].
 
 The system updates its risk score every 15 minutes, with Monetary Policy Committee (MPC) rate decisions reflecting in under 90 seconds, ensuring highly current and relevant insights into market dynamics [1].
 
