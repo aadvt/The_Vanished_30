@@ -24,8 +24,10 @@ async def cache_get(key: str) -> Optional[Any]:
     data = await redis.get(key)
     return json.loads(data) if data else None
 
-async def build_macro_snapshot() -> MacroSnapshot:
+async def build_macro_snapshot(region: str = "national") -> MacroSnapshot:
     redis = get_redis()
+    
+    # Base mapping for national indicators
     mapping = {
         "wb:GDP_GROWTH": "gdp_growth",
         "wb:CPI_YOY": "cpi_yoy",
@@ -40,13 +42,13 @@ async def build_macro_snapshot() -> MacroSnapshot:
         "rbi:HOUSING_CREDIT": "housing_credit",
         "rbi:CONSUMER_CONFIDENCE": "consumer_confidence",
         "nhb:RESIDEX_COMPOSITE": "nhb_residex_composite",
-        "nhb:RESIDEX_MUMBAI": "nhb_residex_mumbai",
-        "nhb:RESIDEX_DELHI": "nhb_residex_delhi",
-        "nhb:RESIDEX_BANGALORE": "nhb_residex_bangalore",
-        "nhb:RESIDEX_CHENNAI": "nhb_residex_chennai",
         "india:MEDIAN_HOME_PRICE": "median_home_price_inr",
         "india:MEDIAN_HH_INCOME": "median_household_income_inr"
     }
+
+    # Add regional mapping overrides
+    region_upper = region.upper()
+    city_residex_key = f"nhb:RESIDEX_{region_upper}"
     
     snapshot_data = {}
     for redis_key, field_name in mapping.items():
@@ -56,6 +58,18 @@ async def build_macro_snapshot() -> MacroSnapshot:
                 snapshot_data[field_name] = float(val)
             except (ValueError, TypeError):
                 snapshot_data[field_name] = None
+    
+    # Specific city index override
+    city_val = await redis.get(city_residex_key)
+    if city_val:
+        snapshot_data["nhb_residex_composite"] = float(city_val)
+
+    # Store city-specific Residex keys for the frontend
+    # This loop ensures we catch all 8 cities for the sidebar/HUD
+    for city in ["MUMBAI", "DELHI", "BANGALORE", "CHENNAI", "HYDERABAD", "KOLKATA", "PUNE", "AHMEDABAD"]:
+        idx_val = await redis.get(f"nhb:RESIDEX_{city}")
+        if idx_val:
+            snapshot_data[f"nhb_residex_{city.lower()}"] = float(idx_val)
                 
     return MacroSnapshot(**snapshot_data)
 

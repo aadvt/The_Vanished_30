@@ -27,5 +27,6 @@ async def query_market(request: QueryRequest):
     return {
         "answer": result.get("query_response"),
         "run_id": result.get("run_id"),
+        "mc_results": result.get("mc_results"),
         "errors": result.get("errors", []),
     }

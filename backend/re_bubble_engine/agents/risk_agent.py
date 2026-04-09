@@ -52,17 +52,21 @@ async def risk_node(state: AgentState) -> dict:
             output_model=RiskLLMOutput
         )
         
-        if overall_score > 60:
-            async with AsyncSessionLocal() as session:
-                flag = BubbleFlag(
-                    region=state.get("region", "national"),
-                    overall_score=overall_score,
-                    flagged_indicators=llm_output.primary_indicators,
-                    narrative=llm_output.narrative
-                )
-                session.add(flag)
-                await session.commit()
-                log.info("bubble_flag_written", region=flag.region, score=overall_score)
+        # Save the Risk Profile to the database
+        async with AsyncSessionLocal() as session:
+            flag = BubbleFlag(
+                region=state.get("region", "national"),
+                overall_score=overall_score,
+                price_income_ratio=p_i_ratio,
+                price_rent_ratio=p_r_ratio,
+                cap_rate_spread=cap_spread_bps / 100, # Store as percentage
+                affordability_pct=afford_pct * 100 if afford_pct else None,
+                narrative=llm_output.narrative,
+                is_active=True
+            )
+            session.add(flag)
+            await session.commit()
+            log.info("bubble_flag_written", region=flag.region, score=overall_score)
         
         updates["risk_score"] = {
             "overall_score": overall_score,

@@ -1,6 +1,5 @@
-// Requests go through Next.js rewrites proxy (next.config.ts)
-// so we use relative URLs — no CORS issues
-const API_BASE = ''
+// Use absolute URL from env if available to bypass proxy during dev
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || ''
 
 export async function api<T = any>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {

@@ -20,7 +20,8 @@ async def valuation_node(state: AgentState) -> dict:
     start_time = time.time()
     updates = {"errors": [], "agent_trace": []}
     try:
-        snapshot = await build_macro_snapshot()
+        region = state.get("region", "national")
+        snapshot = await build_macro_snapshot(region=region)
         updates["macro_snapshot"] = snapshot.model_dump()
         
         ratio_summary = RatioCalculator().compute_all(snapshot)

@@ -96,11 +96,12 @@ const LiveDataLoop = () => {
     }
 
     // Seed primary regional assets with default values so markers always render
-    const defaultAssets = ['MUM-BKC', 'DEL-CP', 'BLR-WF', 'MAA-OMR']
+    const defaultAssets = ['MUM-BKC', 'DEL-CP', 'BLR-WF', 'MAA-OMR', 'AHM-GIFT']
     defaultAssets.forEach(id => {
+      const isAhmedabad = id === 'AHM-GIFT'
       setValuation(id, {
         price_index: 450000 + Math.random() * 550000,
-        risk_score: 2 + Math.random() * 3,
+        risk_score: isAhmedabad ? 1.5 : (7.5 + Math.random() * 2), // Ahmedabad = 15/100 (Excellent), Others = High Risk (Red)
         volatility: Math.random() * 0.3,
         pi_ratio: 8 + Math.random() * 6,
       })

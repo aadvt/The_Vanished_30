@@ -48,6 +48,7 @@ async def run_agent_graph(initial_state: dict) -> dict:
         risk_score=None,
         query_request=initial_state.get("query_request"),
         query_response=None,
+        mc_results=None,
         errors=[],
         agent_trace=[],
         run_id=initial_state.get("run_id", "local_run")

@@ -6,8 +6,12 @@ from storage.redis_client import get_redis, publish_event
 from utils.logger import log
 
 async def run_agent_job():
+  cities = ["Mumbai", "Delhi", "Bangalore", "Chennai", "Hyderabad", "Kolkata", "Pune", "Ahmedabad"]
+  
   try:
-    result = await run_agent_graph({"trigger": "full_run"})
+    for city in cities:
+      log.info("agent_run_start", city=city)
+      result = await run_agent_graph({"trigger": "full_run", "region": city})
     
     if result.get("valuation_result"):
       await publish_event("ws_broadcast", ValuationUpdateMessage(payload=result["valuation_result"]).model_dump(mode="json"))

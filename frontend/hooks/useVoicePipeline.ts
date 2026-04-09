@@ -17,7 +17,7 @@ import { useStore } from '@/store/useStore'
 const DEEPGRAM_WS_URL = 'wss://api.deepgram.com/v1/listen'
 
 export const useVoicePipeline = () => {
-  const { setVoiceStatus, setAudioLevel, setTranscript, appendToken, setIsStreaming } = useStore()
+  const { setVoiceStatus, setAudioLevel, setTranscript, addMessage, setIsStreaming } = useStore()
   
   const mediaStream = useRef<MediaStream | null>(null)
   const audioContext = useRef<AudioContext | null>(null)
@@ -25,6 +25,8 @@ export const useVoicePipeline = () => {
   const dgSocket = useRef<WebSocket | null>(null)
   const rafId = useRef<number>(0)
   const isActive = useRef(false)
+  const isProcessing = useRef(false)
+  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Monitor mic levels for the visual orb feedback
   const monitorAudioLevel = useCallback(() => {
@@ -134,12 +136,17 @@ export const useVoicePipeline = () => {
 
   // Process the STT transcript — detect location, send to query API, then speak the result
   const processTranscript = useCallback(async (transcript: string) => {
-    if (!transcript.trim()) return
+    if (!transcript.trim() || isProcessing.current) return
+    
+    isProcessing.current = true
+    // Add user message to history
+    addMessage('user', transcript)
+    // Clear the transcript UI immediately
+    setTranscript('')
     
     // Check for location intent in the voice command
     detectAndFlyToLocation(transcript)
 
-    setTranscript('')
     setIsStreaming(true)
     const currentState = useStore.getState();
     const currentRegion = currentState.activeRegion || 'national';
@@ -152,6 +159,8 @@ export const useVoicePipeline = () => {
 
     // Only trigger override if they are asking a hypothetical or simulation question
     if (lowerT.includes('what will happen') || lowerT.includes('what if') || lowerT.includes('if ') || isEasing || isStress) {
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+
       if (isEasing && !isStress) {
         currentState.setOverrideScore(15); // Flash Green (Safe / Easing Risk)
       } else if (isStress && !isEasing) {
@@ -162,8 +171,9 @@ export const useVoicePipeline = () => {
         currentState.setOverrideScore(80); // Default to warning/high for general hypotheticals
       }
       
-      setTimeout(() => {
+      flashTimeoutRef.current = setTimeout(() => {
         useStore.getState().setOverrideScore(null);
+        flashTimeoutRef.current = null;
       }, 7000); // 7 second flash while AI thinks/speaks
     }
 
@@ -182,18 +192,33 @@ export const useVoicePipeline = () => {
       const result = await response.json()
       const answer = result.answer || 'I could not find an answer.'
 
-      setTranscript(answer)
-      setIsStreaming(false)
+      // If the backend ran a true Monte Carlo simulation, snap the UI to the actual statistical probability of loss.
+      if (result.mc_results) {
+        if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
 
-      // Speak the AI response
-      if (answer.trim()) {
-        await speakResponse(answer)
+        const trueRiskCore = Math.min(Math.round(result.mc_results.prob_below_current * 100) + 10, 100);
+        useStore.getState().setOverrideScore(trueRiskCore);
+        // Extend the visual duration of the simulation so they can see the true mathematical outcome while the voice speaks
+        flashTimeoutRef.current = setTimeout(() => {
+          useStore.getState().setOverrideScore(null);
+          flashTimeoutRef.current = null;
+        }, 15000); 
       }
+
+      addMessage('assistant', answer)
+      setIsStreaming(false)
+      await speakResponse(answer)
+      isProcessing.current = false
+      
     } catch (err) {
       console.error('Query error:', err)
+      const errorMsg = 'I apologize, but I am having trouble connecting to the real estate engine right now.'
+      addMessage('assistant', errorMsg)
       setIsStreaming(false)
+      await speakResponse(errorMsg)
+      isProcessing.current = false
     }
-  }, [setTranscript, setIsStreaming, speakResponse, detectAndFlyToLocation])
+  }, [addMessage, setIsStreaming, speakResponse, detectAndFlyToLocation, setTranscript])
 
   // Start the full pipeline: Mic → Deepgram STT → AI → ElevenLabs TTS → Speaker
   const startListening = useCallback(async () => {
@@ -223,10 +248,16 @@ export const useVoicePipeline = () => {
       dgSocket.current.onopen = () => {
         setVoiceStatus('listening')
         
-        // Stream mic audio to Deepgram
+        // Stream mic audio to Deepgram — but ONLY if we are listening (not speaking)
         const mediaRecorder = new MediaRecorder(mediaStream.current!, { mimeType: 'audio/webm' })
         mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0 && dgSocket.current?.readyState === WebSocket.OPEN) {
+          const currentStatus = useStore.getState().voiceStatus
+          if (
+            event.data.size > 0 && 
+            dgSocket.current?.readyState === WebSocket.OPEN &&
+            currentStatus === 'listening' &&
+            !isProcessing.current
+          ) {
             dgSocket.current.send(event.data)
           }
         }
@@ -234,6 +265,10 @@ export const useVoicePipeline = () => {
       }
 
       dgSocket.current.onmessage = (event) => {
+        const currentStatus = useStore.getState().voiceStatus
+        // If we are currently speaking, ignore any incoming audio transcripts (echoes)
+        if (currentStatus === 'speaking' || isProcessing.current) return
+
         const data = JSON.parse(event.data)
         const transcript = data.channel?.alternatives?.[0]?.transcript
         
@@ -277,5 +312,5 @@ export const useVoicePipeline = () => {
     setAudioLevel(0)
   }, [setVoiceStatus, setAudioLevel])
 
-  return { startListening, stopListening }
+  return { startListening, stopListening, processTranscript }
 }

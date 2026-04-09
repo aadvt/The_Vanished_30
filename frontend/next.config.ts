@@ -5,19 +5,19 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*',
+        destination: 'http://127.0.0.1:8000/api/:path*',
       },
       {
         source: '/health/:path*',
-        destination: 'http://localhost:8000/health/:path*',
+        destination: 'http://127.0.0.1:8000/health/:path*',
       },
       {
         source: '/health',
-        destination: 'http://localhost:8000/health',
+        destination: 'http://127.0.0.1:8000/health',
       },
       {
         source: '/ws/:path*',
-        destination: 'http://localhost:8000/ws/:path*',
+        destination: 'http://127.0.0.1:8000/ws/:path*',
       },
     ]
   },

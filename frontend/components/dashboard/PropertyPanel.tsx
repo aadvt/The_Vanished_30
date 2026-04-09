@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, TrendingUp, BarChart3, History, Loader2 } from 'lucide-react'
+import { X, TrendingUp, BarChart3, History, Loader2, Shield } from 'lucide-react'
 import { useStore } from '@/store/useStore'
 import { api } from '@/lib/apiClient'
 import type { ValuationRecord, BubbleFlag } from '@/lib/apiClient'
@@ -134,7 +134,17 @@ const PropertyPanel = ({ isOpen = true, onClose = () => {} }: any) => {
             {/* Risk Profile */}
             <section>
               <div className="flex justify-between items-end mb-4">
-                <h4 className="font-headline text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Risk Profile</h4>
+                <div className="flex flex-col gap-1">
+                  <h4 className="font-headline text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Risk Profile</h4>
+                  {selectedAssetId && (
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
+                      <Shield className="w-2.5 h-2.5 text-emerald-600" />
+                      <span className="text-[8px] font-bold text-emerald-700 uppercase tracking-tighter">
+                        PROBING: {selectedAssetId.includes('RE') || selectedAssetId.includes('APT') ? 'P/I AFFORDABILITY' : 'CAP RATE SPREAD'}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <span className="text-xs font-bold font-mono" style={{ color: riskColor }}>
                   {riskLabel} • {(riskScore / 100).toFixed(2)}
                 </span>

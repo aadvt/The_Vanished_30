@@ -12,8 +12,12 @@ class NHBClient:
         "nhb:RESIDEX_COMPOSITE":  "Composite",
         "nhb:RESIDEX_MUMBAI":     "Mumbai",
         "nhb:RESIDEX_DELHI":      "Delhi",
-        "nhb:RESIDEX_BANGALORE":  "Bengaluru", # Scrape might use Bengaluru
+        "nhb:RESIDEX_BANGALORE":  "Bengaluru",
         "nhb:RESIDEX_CHENNAI":    "Chennai",
+        "nhb:RESIDEX_HYDERABAD":  "Hyderabad",
+        "nhb:RESIDEX_KOLKATA":    "Kolkata",
+        "nhb:RESIDEX_PUNE":       "Pune",
+        "nhb:RESIDEX_AHMEDABAD":  "Ahmedabad",
     }
 
     FALLBACK_VALUES = {
@@ -22,6 +26,10 @@ class NHBClient:
         "nhb:RESIDEX_DELHI":      145.8,
         "nhb:RESIDEX_BANGALORE":  171.3,
         "nhb:RESIDEX_CHENNAI":    139.4,
+        "nhb:RESIDEX_HYDERABAD":  148.5,
+        "nhb:RESIDEX_KOLKATA":    128.2,
+        "nhb:RESIDEX_PUNE":       141.7,
+        "nhb:RESIDEX_AHMEDABAD":  134.1,
     }
 
     def __init__(self):
